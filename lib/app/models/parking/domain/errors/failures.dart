@@ -1,4 +1,5 @@
-import '../../../../core/failures.dart';
+
+import 'package:a_parking_flutter/app/core/core.dart';
 
 abstract class ParkingFailure extends Failure {
   ParkingFailure({
@@ -37,18 +38,6 @@ class ParkingParseFailure extends ParkingFailure {
 }
  
 
-class ParkingNoInternetFailure extends ParkingFailure {
-  ParkingNoInternetFailure({
-    required String message,
-    StackTrace? stackTrace,
-    String? label,
-  }) : super(
-          message: message,
-          stackTrace: stackTrace,
-          label: label,
-        );
-}
-
 class ParkingUnknownFailure extends ParkingFailure {
   ParkingUnknownFailure({
     required String message,
@@ -61,8 +50,8 @@ class ParkingUnknownFailure extends ParkingFailure {
         );
 }
 
-class ShortParkingNameFailure extends ParkingFailure {
-  ShortParkingNameFailure({
+class FailureParamEmpty extends ParkingFailure {
+  FailureParamEmpty({
     required String message,
     StackTrace? stackTrace,
     String? label,

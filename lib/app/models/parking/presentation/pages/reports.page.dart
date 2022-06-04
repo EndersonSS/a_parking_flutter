@@ -1,28 +1,19 @@
-import 'package:a_parking_flutter/app/models/parking/presentation/cubit/events.dart';
-import 'package:a_parking_flutter/app/models/parking/presentation/cubit/parking_cubit.dart';
-import 'package:a_parking_flutter/app/models/parking/presentation/widgets/date_time_button.dart';
+import 'package:a_parking_flutter/app/models/parking/presentation/cubit/cubit.dart';
+import 'package:a_parking_flutter/app/models/parking/presentation/widgets/widgets.dart';
+import 'package:a_parking_flutter/app/utils/string_resources.dart';
+import 'package:a_parking_flutter/app/utils/time_diference.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../utils/time_diference.dart';
-import '../cubit/events.dart';
-import '../cubit/states.dart';
-import '../widgets/menu_bottom_sheet.dart';
-import '../widgets/outlined_button_parking.dart';
-
-class ReportsPage extends StatefulWidget {
-  const ReportsPage({Key? key, required this.parkingCubit}) : super(key: key);
-
+class ReportsPage extends StatelessWidget {
   final ParkingCubit parkingCubit;
 
-  @override
-  State<ReportsPage> createState() => _ReportsPageState();
-}
+  const ReportsPage({Key? key, required this.parkingCubit}) : super(key: key);
 
-class _ReportsPageState extends State<ReportsPage> {
   @override
   Widget build(BuildContext context) {
+    DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
     late final TextEditingController editingDateFinalController =
         TextEditingController(
             text: DateFormat('dd/MM/y').format(DateTime.now()).toString());
@@ -37,7 +28,7 @@ class _ReportsPageState extends State<ReportsPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('Relatório',
+        title: const Text(StringResources.report,
             style: TextStyle(
               color: Colors.black,
             )),
@@ -53,17 +44,17 @@ class _ReportsPageState extends State<ReportsPage> {
               const SizedBox(width: 20),
               DateTimeButton(
                 editingController: editingDateInitialController,
-                title: 'Data Inicial',
+                title: StringResources.dateInitial,
                 onTap: () async {
                   final dt = await showDatePicker(
                     context: context,
-                    initialDate: widget.parkingCubit.dateInitialController,
+                    initialDate: parkingCubit.dateInitialController,
                     firstDate:
                         DateTime.now().subtract(const Duration(days: 365)),
                     lastDate: DateTime.now().add(const Duration(days: 365)),
                   );
                   if (dt != null && dt != DateTime.now()) {
-                    widget.parkingCubit.dateInitial(dt);
+                    parkingCubit.dateInitial(dt);
                     editingDateInitialController.text =
                         DateFormat('dd/MM/y').format(dt).toString();
                   }
@@ -72,17 +63,17 @@ class _ReportsPageState extends State<ReportsPage> {
               const SizedBox(width: 10),
               DateTimeButton(
                 editingController: editingDateFinalController,
-                title: 'Data Final',
+                title: StringResources.dateFinal,
                 onTap: () async {
                   final dt = await showDatePicker(
                     context: context,
-                    initialDate: widget.parkingCubit.dateFinalController,
+                    initialDate: parkingCubit.dateFinalController,
                     firstDate:
                         DateTime.now().subtract(const Duration(days: 365)),
                     lastDate: DateTime.now().add(const Duration(days: 365)),
                   );
                   if (dt != null && dt != DateTime.now()) {
-                    widget.parkingCubit.dateFinal(dt);
+                    parkingCubit.dateFinal(dt);
                     editingDateFinalController.text =
                         DateFormat('dd/MM/y').format(dt).toString();
                   }
@@ -90,38 +81,41 @@ class _ReportsPageState extends State<ReportsPage> {
               ),
               const SizedBox(width: 30),
               OutlinedButtonParking(
-                title: 'Filtrar',
+                title: StringResources.filter,
                 backgroundColor: Colors.blue,
                 onPressed: () {
-                  widget.parkingCubit.add(GetReportCarEvent(
+                  parkingCubit.add(GetReportCarEvent(
                       initialDate: DateFormat('y-MM-dd HH:mm:ss.mmm')
-                          .format(widget.parkingCubit.dateInitialController)
+                          .format(parkingCubit.dateInitialController)
                           .toString(),
                       finalDate: DateFormat('y-MM-dd HH:mm:ss.mmm')
-                          .format(widget.parkingCubit.dateFinalController)));
+                          .format(parkingCubit.dateFinalController)));
                 },
               )
             ],
           ),
-          BlocBuilder<ParkingCubit, ParkingState>(
-            bloc: widget.parkingCubit,
+          BlocConsumer<ParkingCubit, ParkingState>(
+            bloc: parkingCubit,
+            listener: (context, state) {},
             buildWhen: (oldState, newState) {
               return oldState != newState;
             },
             builder: (context, state) {
-              if (state is ParkingInitialState) {
+              if (state is CarInitialState) {
                 return const SizedBox.shrink();
               }
-              if (state is ParkingErrorState) {
-                return const Center(child: Text('Error...'));
+              if (state is CarErrorState) {
+                return Center(
+                    child:
+                        Text('${StringResources.error} ${state.errorMessage}'));
               }
-              if (state is ParkingLoadingState) {
+              if (state is CarLoadingState) {
                 return const CircularProgressIndicator.adaptive();
               }
               if (state is CarEmptyState) {
                 return const Padding(
                     padding: EdgeInsets.only(top: 300),
-                    child: Center(child: Text('Ops! Nada encontrado')));
+                    child: Center(child: Text(StringResources.notFound)));
               }
               if (state is CarLoadedState) {
                 return Column(
@@ -147,16 +141,16 @@ class _ReportsPageState extends State<ReportsPage> {
                                     height: 10,
                                   ),
                                   Text(parking.status == 0
-                                      ? 'Veiculo: ${parking.placa}'
+                                      ? '${StringResources.car}: ${parking.placa}'
                                       : ''),
                                   Text(parking.status == 0
-                                      ? 'Entrada: ${parking.entrada}'
+                                      ? '${StringResources.entry}: ${dateFormat.format(DateTime.parse(parking.entrada))}'
                                       : ''),
                                   Text(parking.status == 0
-                                      ? 'Saida: ${parking.saida}'
+                                      ? '${StringResources.exit}: ${dateFormat.format(DateTime.parse(parking.saida))}'
                                       : ''),
                                   Text(parking.status == 0
-                                      ? 'Tempo de permanência:  ${TimeDiference.calculateTimeDifferenceBetween(startDate: DateTime.parse(parking.entrada), endDate: DateTime.parse(parking.saida))}'
+                                      ? '${StringResources.lenghtOfStay}:  ${TimeDiference.calculateTimeDifferenceBetween(startDate: DateTime.parse(parking.entrada), endDate: DateTime.parse(parking.saida))}'
                                       : ''),
                                 ],
                               ),
@@ -166,8 +160,12 @@ class _ReportsPageState extends State<ReportsPage> {
                         ),
                       ),
                     ),
-                    MenuBottomSheet(
-                        widget: Text('Total: ${state.car.length} veiculos')),
+                    Card(
+                      child: Text(
+                        'Total: ${state.car.length} veiculos',
+                        style: const TextStyle(fontSize: 17),
+                      ),
+                    )
                   ],
                 );
               }

@@ -1,11 +1,8 @@
-import 'package:a_parking_flutter/app/models/parking/domain/entities/car_entity.dart';
-
 abstract class ParkingEvent {}
 
-class GetParkingEvent implements ParkingEvent {
-  final String searchText;
+class GetParkingEvent implements ParkingEvent { 
 
-  GetParkingEvent({required this.searchText});
+  GetParkingEvent();
 }
 
 class GetReportCarEvent implements ParkingEvent {
@@ -16,19 +13,35 @@ class GetReportCarEvent implements ParkingEvent {
 }
 
 class InitParkingEvent implements ParkingEvent {
-  final String searchText;
+   
 
-  InitParkingEvent({required this.searchText});
+  InitParkingEvent();
 }
 
 class SaveCarEvent implements ParkingEvent {
   final int idCar;
   final String placa;
-  final int idParkingSpac;
+  final int idParkingSpace;
 
-  SaveCarEvent(
-    {this.idCar = 0,
-    this.placa = '',
-    required this.idParkingSpac,
+  SaveCarEvent({
+    this.idCar = 0,
+    required this.placa,
+    required this.idParkingSpace,
+  });
+}
+
+class InsertParkingEvent implements ParkingEvent {
+  final String vacancyNumber;
+
+  InsertParkingEvent({
+    required this.vacancyNumber,
+  });
+}
+
+class DeleteParkingEvent implements ParkingEvent {
+  final int id;
+
+  DeleteParkingEvent({
+    required this.id,
   });
 }

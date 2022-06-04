@@ -1,19 +1,16 @@
-import 'package:a_parking_flutter/app/models/parking/presentation/cubit/parking_cubit.dart';
-import 'package:a_parking_flutter/app/models/parking/presentation/pages/parking_page.dart';
-import 'package:a_parking_flutter/app/models/parking/presentation/pages/reports.page.dart';
+import 'package:a_parking_flutter/app/models/parking/domain/repositories/repositories.dart';
+import 'package:a_parking_flutter/app/models/parking/domain/usecases/car_usecase.dart';
+import 'package:a_parking_flutter/app/models/parking/domain/usecases/parking_space_usecase.dart';
+import 'package:a_parking_flutter/app/models/parking/external/datasources/cart_datasource.dart';
+import 'package:a_parking_flutter/app/models/parking/external/datasources/parking_space_datasource.dart';
+import 'package:a_parking_flutter/app/models/parking/infra/datasources/car_datasource_interface.dart';
+import 'package:a_parking_flutter/app/models/parking/infra/datasources/parking_space_datasource_interface.dart';
+import 'package:a_parking_flutter/app/models/parking/infra/repositories/infra_repositories.dart';
+import 'package:a_parking_flutter/app/models/parking/presentation/cubit/cubit.dart';
+import 'package:a_parking_flutter/app/models/parking/presentation/pages/pages.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../core/db/db_off.dart';
-import 'domain/repositories/car_repository_interface.dart';
-import 'domain/repositories/parking_space_repository_interface.dart';
-import 'domain/usecases/get_car.dart';
-import 'domain/usecases/get_parking_space.dart';
-import 'external/datasources/cart_datasource.dart';
-import 'external/datasources/parking_space_datasource.dart';
-import 'infra/datasources/car_datasource_interface.dart';
-import 'infra/datasources/parking_space_datasource_interface.dart';
-import 'infra/repositories/car_repository.dart';
-import 'infra/repositories/parking_space_repository.dart';
 
 class ParkingModule extends Module {
   @override
@@ -27,8 +24,7 @@ class ParkingModule extends Module {
 
         Bind.lazySingleton<ICarDatasource>(
           (i) => CarDatasource(
-            DbOff().db,
-            i.get(),
+            DbOff().db, 
           ),
         ),
 
@@ -46,14 +42,14 @@ class ParkingModule extends Module {
         ),
 
         //usecase
-        Bind.factory<IGetParkingSpaceUsecase>(
-          (i) => GetParkingSpaceUsecase(
+        Bind.factory<IParkingSpaceUsecase>(
+          (i) => ParkingSpaceUsecase(
             parkingSpaceRepository: i.get(),
           ),
         ),
 
-        Bind.factory<IGetCarUsecase>(
-          (i) => GetCarUsecase(
+        Bind.factory<ICarUsecase>(
+          (i) => CarUsecase(
             carRepository: i.get(),
           ),
         ),
@@ -61,8 +57,8 @@ class ParkingModule extends Module {
         //cubit
         Bind.factory(
           (i) => ParkingCubit(
-            getParkingSpaceUsecase: i.get(),
-            getCarUsecase: i.get(),
+            parkingSpaceUsecase: i.get(),
+            carUsecase: i.get(),
           ),
         ),
       ];

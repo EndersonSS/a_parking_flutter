@@ -1,23 +1,19 @@
+import 'package:a_parking_flutter/app/core/core.dart';
 import 'package:a_parking_flutter/app/models/parking/domain/entities/car_entity.dart';
-import 'package:a_parking_flutter/app/models/parking/external/datasources/parking_space_datasource.dart';
+import 'package:a_parking_flutter/app/models/parking/external/adapter/car_entity_adapter.dart'; 
+import 'package:a_parking_flutter/app/models/parking/infra/datasources/car_datasource_interface.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../../../core/exceptions.dart';
-import '../../infra/datasources/car_datasource_interface.dart';
-import '../adapter/car_entity_adapter.dart';
-
 class CarDatasource implements ICarDatasource {
-  final Database db;
-  final ParkingSpaceDatasource parkingSpaceDatasource;
-  CarDatasource(this.db, this.parkingSpaceDatasource);
+  final Database db; 
+  CarDatasource(this.db);
 
   @override
   Future<List<CarEntity>> getCar(
       {required String initialDate, required String finalDate}) async {
     try {
-      List<Map<String, dynamic>> resultado = await db.rawQuery(
-          '''SELECT 
+      List<Map<String, dynamic>> resultado = await db.rawQuery('''SELECT 
                 id,
                 placa,
                 status,
@@ -42,12 +38,15 @@ class CarDatasource implements ICarDatasource {
   }
 
   @override
-  Future saveCar(int idCar, String placa, int idParkingSpace) async {
+  Future saveCar(
+      {required int idCar,
+      required String placa,
+      required int idParkingSpace}) async {
     try {
       await db.transaction((txn) async {
         var batch = txn.batch();
 
-        if (idCar == 0) { 
+        if (idCar == 0) {
           batch.insert(
             'a_car',
             {
@@ -66,7 +65,7 @@ class CarDatasource implements ICarDatasource {
             where: 'id = ?',
             whereArgs: [idParkingSpace],
           );
-        } else { 
+        } else {
           batch.update(
             'a_car',
             {

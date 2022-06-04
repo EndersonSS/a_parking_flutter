@@ -1,17 +1,16 @@
-import 'package:a_parking_flutter/app/models/parking/presentation/cubit/events.dart';
-import 'package:a_parking_flutter/app/models/parking/presentation/cubit/states.dart';
+import 'package:a_parking_flutter/app/models/parking/domain/errors/failures.dart';
+import 'package:a_parking_flutter/app/models/parking/domain/usecases/car_usecase.dart';
+import 'package:a_parking_flutter/app/models/parking/domain/usecases/parking_space_usecase.dart';
 import 'package:bloc/bloc.dart';
 
-import '../../domain/errors/failures.dart';
-import '../../domain/usecases/get_car.dart';
-import '../../domain/usecases/get_parking_space.dart';
+import 'cubit.dart';
 
 class ParkingCubit extends Bloc<ParkingEvent, ParkingState> {
   ParkingCubit({
-    required IGetCarUsecase getCarUsecase,
-    required IGetParkingSpaceUsecase getParkingSpaceUsecase,
-  })  : _getParkingSpaceUsecase = getParkingSpaceUsecase,
-        _getCarUsecase = getCarUsecase,
+    required ICarUsecase carUsecase,
+    required IParkingSpaceUsecase parkingSpaceUsecase,
+  })  : _parkingSpaceUsecase = parkingSpaceUsecase,
+        _carUsecase = carUsecase,
         super(ParkingInitialState()) {
     on<GetParkingEvent>(
       (event, emit) => getParkingSpace(event, emit),
@@ -28,10 +27,18 @@ class ParkingCubit extends Bloc<ParkingEvent, ParkingState> {
     on<GetReportCarEvent>(
       (event, emit) => getReportCar(event, emit),
     );
+
+    on<InsertParkingEvent>(
+      (event, emit) => insertParkingSpace(event, emit),
+    );
+
+    on<DeleteParkingEvent>(
+      (event, emit) => deleteParkingSpace(event, emit),
+    );
   }
 
-  final IGetCarUsecase _getCarUsecase;
-  final IGetParkingSpaceUsecase _getParkingSpaceUsecase;
+  final ICarUsecase _carUsecase;
+  final IParkingSpaceUsecase _parkingSpaceUsecase;
 
   DateTime _dateInitialController =
       DateTime.now().subtract(const Duration(days: 1));
@@ -48,8 +55,7 @@ class ParkingCubit extends Bloc<ParkingEvent, ParkingState> {
   ) async {
     try {
       emit(ParkingLoadingState());
-      final result =
-          await _getParkingSpaceUsecase.call(searchText: event.searchText);
+      final result = await _parkingSpaceUsecase.call();
       if (result.isEmpty) {
         emit(ParkingEmptyState());
       } else {
@@ -65,12 +71,13 @@ class ParkingCubit extends Bloc<ParkingEvent, ParkingState> {
     Emitter<ParkingState> emit,
   ) async {
     try {
-      await _getCarUsecase.saveCar(
-          event.idCar, event.placa, event.idParkingSpac);
-      emit(CarSucessState());
+      await _carUsecase.saveCar(
+          idCar: event.idCar,
+          placa: event.placa,
+          idParkingSpace: event.idParkingSpace);
       emit(ParkingInitialState());
     } catch (error) {
-      emit(CarErrorState(errorMessage: error.toString()));
+      emit(ParkingErrorState(errorMessage: error.toString()));
     }
   }
 
@@ -79,8 +86,16 @@ class ParkingCubit extends Bloc<ParkingEvent, ParkingState> {
     Emitter<ParkingState> emit,
   ) async {
     try {
-      emit(ParkingLoadingState());
-      final result = await _getCarUsecase.call(
+      if (event.initialDate.isEmpty || event.finalDate.isEmpty) {
+        emit(
+          const CarErrorState(
+            errorMessage: 'Please dates cannot be empty.',
+          ),
+        );
+        return;
+      }
+      emit(CarLoadingState());
+      final result = await _carUsecase.call(
           initialDate: event.initialDate, finalDate: event.finalDate);
       if (result.isEmpty) {
         emit(CarEmptyState());
@@ -88,8 +103,41 @@ class ParkingCubit extends Bloc<ParkingEvent, ParkingState> {
         emit(CarLoadedState(car: result));
       }
     } on ParkingFailure catch (error) {
-      emit(ParkingErrorState(errorMessage: error.message));
+      emit(CarErrorState(errorMessage: error.message));
     }
+  }
+
+  Future<void> insertParkingSpace(
+    InsertParkingEvent event,
+    Emitter<ParkingState> emit,
+  ) async {
+    try {
+      final result = await _parkingSpaceUsecase.insertParkingSpace(
+          vacancyNumber: event.vacancyNumber);
+
+      if (result == true) {
+      } else {
+        emit(const ParkingExistingState(
+            errorMessage: 'Vaga já existente, digite outro numero disponivel'));
+      }
+    } catch (error) {
+      emit(ParkingErrorState(errorMessage: error.toString()));
+    }
+
+    emit(ParkingInitialState());
+  }
+
+  Future deleteParkingSpace(
+    DeleteParkingEvent event,
+    Emitter<ParkingState> emit,
+  ) async {
+    try {
+      await _parkingSpaceUsecase.deleteParkingSpace(id: event.id);
+    } catch (error) {
+      emit(ParkingErrorDeleteState(errorMessage: error.toString()));
+    }
+
+    emit(ParkingInitialState());
   }
 
   void dateInitial(DateTime event) {

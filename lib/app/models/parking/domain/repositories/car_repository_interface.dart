@@ -1,4 +1,4 @@
-import '../entities/car_entity.dart';
+import 'package:a_parking_flutter/app/models/parking/domain/entities/entities.dart';
 
 abstract class ICarRepository {
   Future<List<CarEntity>> getCar({
@@ -6,5 +6,6 @@ abstract class ICarRepository {
     required String finalDate,
   });
 
-  Future saveCar(int idCar, String placa, int idParkingSpac);
+  Future saveCar(
+      {required int idCar, required String placa, required int idParkingSpace});
 }

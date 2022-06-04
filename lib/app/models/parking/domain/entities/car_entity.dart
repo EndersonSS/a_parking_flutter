@@ -2,15 +2,15 @@ class CarEntity {
   final int id;
   String placa;
   final int status;
-  int? parkingSpacelk;
+  int parkingSpacelk;
   final String entrada;
   final String saida;
 
   CarEntity({
-    this.id = 0,
+    required this.id,
     this.placa = '',
     this.status = 1,
-    this.parkingSpacelk,
+    required this.parkingSpacelk,
     this.entrada = '',
     this.saida = '',
   });

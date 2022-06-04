@@ -1,29 +1,41 @@
+import 'package:a_parking_flutter/app/models/parking/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class MenuBottomSheet extends StatelessWidget {
-  const MenuBottomSheet({Key? key, required this.widget}) : super(key: key);
+  const MenuBottomSheet(
+      {Key? key, required this.onPressed1, required this.onPressed2})
+      : super(key: key);
 
-  final Widget widget;
+  final void Function() onPressed1;
+  final void Function() onPressed2;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: 70,
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Colors.black54,
-                blurRadius: 15.0,
-                offset: Offset(0.0, 0.75))
-          ],
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
+    return Card(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: OutlinedButtonParking(
+                  title: 'Adicionar Vaga',
+                  backgroundColor: Colors.blue,
+                  onPressed: onPressed1),
+            ),
           ),
-        ),
-        padding: const EdgeInsets.all(10),
-        child: widget);
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: OutlinedButtonParking(
+                title: 'Relatorio',
+                backgroundColor: Colors.blue,
+                onPressed: onPressed2,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

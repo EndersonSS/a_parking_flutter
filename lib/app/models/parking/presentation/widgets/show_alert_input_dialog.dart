@@ -7,6 +7,8 @@ Future<void> showAlertInputDialog(
   required String defaultAction1,
   required String defaultAction2,
   required bool entrada,
+  
+  required TextInputType textInputType,
   required Function onClickOk,
   bool isDismissible = true,
   required TextEditingController controller,
@@ -45,6 +47,7 @@ Future<void> showAlertInputDialog(
               ),
               entrada == true
                   ? TextFormField(
+                      keyboardType: textInputType,
                       controller: controller,
                       validator: (v) {
                         if (v!.isEmpty) {

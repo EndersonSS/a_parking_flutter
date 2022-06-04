@@ -10,11 +10,9 @@ class ParkingSpaceDatasource implements IParkingSpaceDatasource {
   ParkingSpaceDatasource(this.db);
 
   @override
-  Future<List<ParkingSpaceEntity>> getParkingSpace(
-      {required String searchText}) async {
+  Future<List<ParkingSpaceEntity>> getParkingSpace() async {
     try {
-      List<Map<String, dynamic>> resultado = await db.rawQuery(
-          '''SELECT
+      List<Map<String, dynamic>> resultado = await db.rawQuery('''SELECT
                 a_parking_space.id,
                 a_parking_space.status,
                 a_parking_space.vaga,
@@ -58,13 +56,37 @@ class ParkingSpaceDatasource implements IParkingSpaceDatasource {
     }
   }
 
-  // @override
-  // Future insertParkingSpace(String numeroVaga) async {
-  //   return await db.insert(
-  //     'a_parking_space',
-  //     {
-  //       'vaaga': numeroVaga,
-  //     },
-  //   );
-  // }
+  @override
+  Future<bool> insertParkingSpace(String vacancyNumber) async {
+    final res = await db.rawQuery(
+        "SELECT * FROM a_parking_space WHERE vaga = '$vacancyNumber'");
+    try {
+      if (res.isEmpty) {
+        await db.insert(
+          'a_parking_space',
+          {
+            'vaga': vacancyNumber,
+            'status': 1,
+          },
+        );
+        return true;
+      } else {
+        return false;
+      }
+    } on DatabaseException catch (error, stackTrace) {
+      throw NoInternetExpcetion(
+        message: 'Error. Try Again',
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  @override
+  Future deleteParkingSpace(int id) async {
+    try {
+      return await db.rawDelete("DELETE FROM a_parking_space WHERE id = $id");
+    } on DatabaseException catch (error) {
+      throw Exception(error.toString());
+    }
+  }
 }

@@ -65,14 +65,6 @@ class CarErrorState implements ParkingState {
   bool? get stringify => true;
 }
 
-class CarSucessState implements ParkingState {
-  @override
-  List<Object?> get props => [];
-
-  @override
-  bool? get stringify => true;
-}
-
 class CarLoadedState implements ParkingState {
   final List<CarEntity> car;
 
@@ -88,6 +80,47 @@ class CarLoadedState implements ParkingState {
 class CarEmptyState implements ParkingState {
   @override
   List<Object?> get props => [];
+
+  @override
+  bool? get stringify => true;
+}
+
+class CarLoadingState implements ParkingState {
+  @override
+  List<Object?> get props => [];
+
+  @override
+  bool? get stringify => true;
+}
+
+class CarInitialState implements ParkingState {
+  @override
+  List<Object?> get props => [];
+
+  @override
+  bool? get stringify => true;
+}
+
+
+class ParkingExistingState implements ParkingState {
+   final String errorMessage;
+
+  const ParkingExistingState({required this.errorMessage});
+
+  @override
+  List<Object?> get props => [errorMessage];
+
+  @override
+  bool? get stringify => true;
+}
+
+class ParkingErrorDeleteState implements ParkingState {
+  final String errorMessage;
+
+  const ParkingErrorDeleteState({required this.errorMessage});
+
+  @override
+  List<Object?> get props => [errorMessage];
 
   @override
   bool? get stringify => true;

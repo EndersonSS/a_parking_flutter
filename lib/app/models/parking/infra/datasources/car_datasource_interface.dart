@@ -1,9 +1,11 @@
- 
-
-import '../../domain/entities/car_entity.dart';
+import 'package:a_parking_flutter/app/models/parking/domain/entities/entities.dart';
 
 abstract class ICarDatasource {
-  Future<List<CarEntity>> getCar( {required String initialDate, required String finalDate, });
+  Future<List<CarEntity>> getCar({
+    required String initialDate,
+    required String finalDate,
+  });
 
-   Future saveCar(int idCar, String placa, int idParkingSpac);
+  Future saveCar(
+      {required int idCar, required String placa, required int idParkingSpace});
 }

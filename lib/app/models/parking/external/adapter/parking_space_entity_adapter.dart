@@ -1,4 +1,5 @@
-import 'package:a_parking_flutter/app/models/parking/domain/entities/parking_space_entity.dart';
+ 
+import 'package:a_parking_flutter/app/models/parking/domain/entities/entities.dart';
 import 'package:intl/intl.dart';
 
 class ParkingSpaceEntityAdapter {

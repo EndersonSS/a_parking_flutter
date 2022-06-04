@@ -12,30 +12,54 @@ class ParkingSpaceRepository implements IParkingSpaceRepository {
   }) : _parkingSpaceDatasource = parkingSpaceDatasource;
 
   @override
-  Future<List<ParkingSpaceEntity>> getParkingSpace(
-      {required String searchText}) async {
+  Future<List<ParkingSpaceEntity>> getParkingSpace() async {
     try {
-      return await _parkingSpaceDatasource.getParkingSpace(
-          searchText: searchText);
+      return await _parkingSpaceDatasource.getParkingSpace();
     } catch (error, stackTrace) {
       throw ParkingUnknownFailure(
           message: 'Erro inesperado. Por favor tente novamente.',
           stackTrace: stackTrace,
-          label: 'ParkingUnknownFailure: getParkingSpace() - ParkingUnknownFailure');
+          label:
+              'ParkingUnknownFailure: getParkingSpace() - ParkingUnknownFailure');
     }
   }
 
   @override
-  Future updateParkingSpace(int id, int satatus) async {
+  Future updateParkingSpace({required int id, required int satatus}) async {
     try {
       return await _parkingSpaceDatasource.updateParkingSpace(id, satatus);
     } catch (error, stackTrace) {
       throw ParkingUnknownFailure(
           message: 'Erro inesperado. Por favor tente novamente.',
           stackTrace: stackTrace,
-          label: 'ParkingUnknownFailure: updateParkingSpace() - ParkingUnknownFailure');
+          label:
+              'ParkingUnknownFailure: updateParkingSpace() - ParkingUnknownFailure');
     }
   }
-  
- 
+
+  @override
+  Future<bool> insertParkingSpace({required String vacancyNumber}) async {
+    try {
+      return await _parkingSpaceDatasource.insertParkingSpace(vacancyNumber);
+    } catch (error, stackTrace) {
+      throw ParkingUnknownFailure(
+          message: 'Erro inesperado. Por favor tente novamente.',
+          stackTrace: stackTrace,
+          label:
+              'ParkingUnknownFailure: insertParkingSpace() - ParkingUnknownFailure');
+    }
+  }
+
+  @override
+  Future deleteParkingSpace({required int id}) async {
+    try {
+      return await _parkingSpaceDatasource.deleteParkingSpace(id);
+    } catch (error, stackTrace) {
+      throw ParkingUnknownFailure(
+          message: 'Erro inesperado. Por favor tente novamente.',
+          stackTrace: stackTrace,
+          label:
+              'ParkingUnknownFailure: deleteParkingSpace() - ParkingUnknownFailure');
+    }
+  }
 }

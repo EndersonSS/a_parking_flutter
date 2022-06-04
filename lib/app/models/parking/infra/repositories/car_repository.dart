@@ -27,9 +27,13 @@ class CarRepository implements ICarRepository {
   }
 
   @override
-  Future saveCar(int idCar, String placa, int idParkingSpac) async {
+  Future saveCar(
+      {required int idCar,
+      required String placa,
+      required int idParkingSpace}) async {
     try {
-      return await _carDatasource.saveCar(idCar, placa, idParkingSpac);
+      return await _carDatasource.saveCar(
+          idCar: idCar, placa: placa, idParkingSpace: idParkingSpace);
     } catch (error, stackTrace) {
       throw ParkingUnknownFailure(
           message: 'Erro inesperado. Por favor tente novamente.',

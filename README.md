@@ -1,16 +1,15 @@
 # a_parking_flutter
 
-A new Flutter project.
+Projeto de um app para gerenciamento de vagas de estacionamento feito em flutter, usando uma arquitetura bem definida e desacoplada, seguindo TDD como metodologia e Clean Architecture para fazer a distribuição de responsabilidades em camada, seguindo os princípios do SOLID.
 
-## Getting Started
+<div align="center">
+<img src="https://user-images.githubusercontent.com/39202278/172029777-ea03e937-b564-483b-aa11-3cad43767725.PNG" width="400px" />
+</div>
 
-This project is a starting point for a Flutter application.
+<div align="center">
+<img src="https://user-images.githubusercontent.com/39202278/172029852-b2133504-5141-4cb6-9ade-8d3db3e1b833.PNG" width="400px" />
+</div>
+ 
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+ 

@@ -1,8 +1,8 @@
 import 'package:a_parking_flutter/app/models/parking/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
-class MenuBottomSheet extends StatelessWidget {
-  const MenuBottomSheet(
+class MenuBottomTop extends StatelessWidget {
+  const MenuBottomTop(
       {Key? key, required this.onPressed1, required this.onPressed2})
       : super(key: key);
 

@@ -26,15 +26,9 @@ class ReportsPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      appBar: const PAppbar(
         backgroundColor: Colors.white,
-        title: const Text(StringResources.report,
-            style: TextStyle(
-              color: Colors.black,
-            )),
-        centerTitle: true,
-        elevation: 0.0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        title: StringResources.report,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

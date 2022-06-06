@@ -22,15 +22,9 @@ class ParkingPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      appBar: const PAppbar(
         backgroundColor: Colors.white,
-        title: const Text(StringResources.parkingLots,
-            style: TextStyle(
-              color: Colors.black,
-            )),
-        centerTitle: true,
-        elevation: 0.0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        title: StringResources.parkingLots,
       ),
       body: SafeArea(
         top: true,
@@ -41,7 +35,7 @@ class ParkingPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 10),
-                MenuBottomSheet(
+                MenuBottomTop(
                   onPressed1: () {
                     addParkingSpaceController.clear();
                     showAlertInputDialog(

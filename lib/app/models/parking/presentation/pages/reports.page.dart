@@ -7,10 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-class ReportsPage extends StatelessWidget {
+class ReportsPage extends StatefulWidget {
   final ParkingCubit parkingCubit;
 
   const ReportsPage({Key? key, required this.parkingCubit}) : super(key: key);
+
+  @override
+  State<ReportsPage> createState() => _ReportsPageState();
+}
+
+class _ReportsPageState extends State<ReportsPage> {
+  @override
+  void dispose() {
+    widget.parkingCubit.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +54,13 @@ class ReportsPage extends StatelessWidget {
                 onTap: () async {
                   final dt = await showDatePicker(
                     context: context,
-                    initialDate: parkingCubit.dateInitialController,
+                    initialDate: widget.parkingCubit.dateInitialController,
                     firstDate:
                         DateTime.now().subtract(const Duration(days: 365)),
                     lastDate: DateTime.now().add(const Duration(days: 365)),
                   );
                   if (dt != null && dt != DateTime.now()) {
-                    parkingCubit.dateInitial(dt);
+                    widget.parkingCubit.dateInitial(dt);
                     editingDateInitialController.text =
                         DateFormat('dd/MM/y').format(dt).toString();
                   }
@@ -62,13 +73,13 @@ class ReportsPage extends StatelessWidget {
                 onTap: () async {
                   final dt = await showDatePicker(
                     context: context,
-                    initialDate: parkingCubit.dateFinalController,
+                    initialDate: widget.parkingCubit.dateFinalController,
                     firstDate:
                         DateTime.now().subtract(const Duration(days: 365)),
                     lastDate: DateTime.now().add(const Duration(days: 365)),
                   );
                   if (dt != null && dt != DateTime.now()) {
-                    parkingCubit.dateFinal(dt);
+                    widget.parkingCubit.dateFinal(dt);
                     editingDateFinalController.text =
                         DateFormat('dd/MM/y').format(dt).toString();
                   }
@@ -79,18 +90,18 @@ class ReportsPage extends StatelessWidget {
                 title: StringResources.filter,
                 backgroundColor: Colors.blue,
                 onPressed: () {
-                  parkingCubit.add(GetReportCarEvent(
+                  widget.parkingCubit.add(GetReportCarEvent(
                       initialDate: DateFormat('y-MM-dd HH:mm:ss.mmm')
-                          .format(parkingCubit.dateInitialController)
+                          .format(widget.parkingCubit.dateInitialController)
                           .toString(),
                       finalDate: DateFormat('y-MM-dd HH:mm:ss.mmm')
-                          .format(parkingCubit.dateFinalController)));
+                          .format(widget.parkingCubit.dateFinalController)));
                 },
               )
             ],
           ),
           BlocConsumer<ParkingCubit, ParkingState>(
-            bloc: parkingCubit,
+            bloc: widget.parkingCubit,
             listener: (context, state) {},
             buildWhen: (oldState, newState) {
               return oldState != newState;

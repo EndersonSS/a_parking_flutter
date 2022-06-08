@@ -12,7 +12,8 @@ class ParkingSpaceDatasource implements IParkingSpaceDatasource {
   @override
   Future<List<ParkingSpaceEntity>> getParkingSpace() async {
     try {
-      List<Map<String, dynamic>> resultado = await db.rawQuery('''SELECT
+      List<Map<String, dynamic>> resultado = await db.rawQuery(
+          '''SELECT
                 a_parking_space.id,
                 a_parking_space.status,
                 a_parking_space.vaga,

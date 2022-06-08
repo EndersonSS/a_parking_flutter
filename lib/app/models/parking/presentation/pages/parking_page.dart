@@ -8,10 +8,21 @@ import 'package:flutter_modular/flutter_modular.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class ParkingPage extends StatelessWidget {
+class ParkingPage extends StatefulWidget {
   final ParkingCubit parkingCubit;
 
   const ParkingPage({Key? key, required this.parkingCubit}) : super(key: key);
+
+  @override
+  State<ParkingPage> createState() => _ParkingPageState();
+}
+
+class _ParkingPageState extends State<ParkingPage> {
+  @override
+  void dispose() {
+    widget.parkingCubit.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +60,7 @@ class ParkingPage extends StatelessWidget {
                       defaultAction2: StringResources.save,
                       controller: addParkingSpaceController,
                       onClickOk: () => {
-                        parkingCubit.add(InsertParkingEvent(
+                        widget.parkingCubit.add(InsertParkingEvent(
                             vacancyNumber: addParkingSpaceController.text)),
                       },
                     );
@@ -57,7 +68,7 @@ class ParkingPage extends StatelessWidget {
                   onPressed2: (() => Modular.to.pushNamed('/reports')),
                 ),
                 BlocConsumer<ParkingCubit, ParkingState>(
-                    bloc: parkingCubit,
+                    bloc: widget.parkingCubit,
                     listener: (context, state) {
                       if (state is ParkingExistingState) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -79,7 +90,7 @@ class ParkingPage extends StatelessWidget {
                     },
                     builder: (context, state) {
                       if (state is ParkingInitialState) {
-                        parkingCubit.add(GetParkingEvent());
+                        widget.parkingCubit.add(GetParkingEvent());
                         return const SizedBox.shrink();
                       }
                       if (state is ParkingErrorState) {
@@ -92,7 +103,7 @@ class ParkingPage extends StatelessWidget {
                             const SizedBox(height: 20),
                             OutlinedButtonParking(
                                 onPressed: () {
-                                  parkingCubit.add(GetParkingEvent());
+                                  widget.parkingCubit.add(GetParkingEvent());
                                 },
                                 backgroundColor: Colors.red,
                                 title: StringResources.tryAgain)
@@ -182,7 +193,9 @@ class ParkingPage extends StatelessWidget {
                                                             controller:
                                                                 editingController,
                                                             onClickOk: () => {
-                                                              parkingCubit.add(
+                                                              widget
+                                                                  .parkingCubit
+                                                                  .add(
                                                                 SaveCarEvent(
                                                                     placa:
                                                                         editingController
@@ -215,7 +228,8 @@ class ParkingPage extends StatelessWidget {
                                                               controller:
                                                                   editingController,
                                                               onClickOk: () => {
-                                                                parkingCubit
+                                                                widget
+                                                                    .parkingCubit
                                                                     .add(
                                                                   SaveCarEvent(
                                                                     idCar: parking
@@ -257,7 +271,7 @@ class ParkingPage extends StatelessWidget {
                                                       controller:
                                                           editingController,
                                                       onClickOk: () => {
-                                                        parkingCubit.add(
+                                                        widget.parkingCubit.add(
                                                           DeleteParkingEvent(
                                                               id: parking.id),
                                                         ),

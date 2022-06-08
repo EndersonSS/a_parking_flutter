@@ -147,4 +147,10 @@ class ParkingCubit extends Bloc<ParkingEvent, ParkingState> {
   void dateFinal(DateTime event) {
     _dateFinalController = event;
   }
+
+
+  @override
+  Future<void> close() {
+    return super.close();
+  }
 }
